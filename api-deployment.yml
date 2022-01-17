@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  ctb-api
+  labels:
+    ctb: api-deployment
+spec:
+  selector:
+    matchLabels:
+      ctb: api-pod
+  replicas: 7 
+  template:
+    metadata:
+      labels:
+        ctb: api-pod
+    spec:
+      containers:
+      - name:  ctb-api
+        image: ahmedrw/test-repo:v1
+        envFrom:
+         - configMapRef:
+            name: ctb-env-configs
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ctb-api-service
+  namespace: default
+spec:
+  selector:
+    ctb: api-pod
+  type: LoadBalancer
+  ports:
+  - name: 
+    protocol: TCP
+    port: 3000
+    targetPort: 3000

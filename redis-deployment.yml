@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  ctb-redis
+  namespace: default
+  labels:
+    ctb: redis-deployment
+spec:
+  selector:
+    matchLabels:
+      ctb: redis-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        ctb: redis-pod
+    spec:
+      containers:
+      - name:  ctb-redis
+        image: redis:6.2.6
+        ports:
+        - containerPort:  6739
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ctb-redis-service
+spec:
+  selector:
+    ctb: redis-pod
+  ports:
+  - name: ctb-redis-service
+    protocol: TCP
+    port: 6739
+    targetPort: 6739

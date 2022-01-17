@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  ctb-db
+  namespace: default
+  labels:
+    ctb:  db-deployment
+spec:
+  selector:
+    matchLabels:
+      ctb: db-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        ctb: db-pod
+    spec: 
+      containers:
+      - name:  ctb-db
+        image:  postgres:14
+        env:
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        - name: POSTGRES_DB
+          value: ctb_api
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ctb-db-service
+  namespace: default
+spec:
+  selector:
+    ctb: db-pod
+  ports:
+  - name: ctb-db-service
+    protocol: TCP
+    port: 5432
+    targetPort: 5432
